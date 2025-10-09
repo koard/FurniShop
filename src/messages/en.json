@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "promotions": "Promotions",
+    "about": "About"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  }
+}

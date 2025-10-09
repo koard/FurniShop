@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: 220 33% 98%;
+  --foreground: 221 39% 12%;
+  --muted: 220 25% 94%;
+  --muted-foreground: 220 15% 46%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 221 39% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 221 39% 12%;
+  --border: 220 16% 87%;
+  --input: 220 16% 87%;
+  --primary: 223 83% 31%;
+  --primary-foreground: 210 40% 96%;
+  --secondary: 28 94% 62%;
+  --secondary-foreground: 216 34% 17%;
+  --accent: 199 89% 48%;
+  --accent-foreground: 210 40% 96%;
+  --success: 142 71% 35%;
+  --success-foreground: 144 70% 95%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 223 100% 46%;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.65rem;
+  --radius-lg: 0.95rem;
+  --radius-xl: 1.35rem;
+  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow-sm: 0 4px 16px -6px rgb(15 23 42 / 0.12);
+  --shadow-md: 0 12px 32px -12px rgb(15 23 42 / 0.16);
+  --shadow-lg: 0 24px 48px -20px rgb(15 23 42 / 0.2);
+  --fs-font-sans: var(--font-inter), "Inter", "Noto Sans Thai", system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fs-font-display: "Inter", system-ui, sans-serif;
+  --fs-font-alt: "Noto Sans Thai", "Inter", sans-serif;
+  --fs-spacing-xs: 0.25rem;
+  --fs-spacing-sm: 0.5rem;
+  --fs-spacing-md: 1rem;
+  --fs-spacing-lg: 1.5rem;
+  --fs-spacing-xl: 2rem;
+  --fs-background: hsl(var(--background));
+  --fs-foreground: hsl(var(--foreground));
+  --fs-muted: hsl(var(--muted));
+  --fs-border: hsl(var(--border));
+  --fs-ring: hsl(var(--ring));
+  --fs-brand: hsl(var(--primary));
+  --fs-brand-foreground: hsl(var(--primary-foreground));
+  --fs-accent: hsl(var(--accent));
+  --fs-success: hsl(var(--success));
+  --fs-danger: hsl(var(--destructive));
+  --fs-surface: hsl(var(--card));
+  --fs-surface-muted: hsl(var(--muted));
+  --fs-radius-sm: var(--radius-sm);
+  --fs-radius-md: var(--radius-md);
+  --fs-radius-lg: var(--radius-lg);
+  --fs-radius-xl: var(--radius-xl);
+  --fs-shadow-sm: var(--shadow-sm);
+  --fs-shadow-md: var(--shadow-md);
+  --fs-shadow-lg: var(--shadow-lg);
+}
+
+[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+  --background: 224 35% 6%;
+  --foreground: 210 40% 96%;
+  --muted: 220 15% 22%;
+  --muted-foreground: 217 15% 72%;
+  --popover: 222 47% 4%;
+  --popover-foreground: 210 40% 96%;
+  --card: 222 47% 6%;
+  --card-foreground: 210 40% 96%;
+  --border: 216 27% 16%;
+  --input: 216 27% 16%;
+  --primary: 223 100% 74%;
+  --primary-foreground: 223 83% 21%;
+  --secondary: 31 100% 58%;
+  --secondary-foreground: 224 35% 6%;
+  --accent: 199 89% 48%;
+  --accent-foreground: 210 40% 96%;
+  --success: 142 71% 45%;
+  --success-foreground: 140 100% 92%;
+  --destructive: 0 93% 70%;
+  --destructive-foreground: 210 40% 96%;
+  --ring: 223 100% 74%;
+  --shadow-xs: 0 1px 2px 0 rgb(8 47 73 / 0.35);
+  --shadow-sm: 0 10px 24px -12px rgb(15 23 42 / 0.35);
+  --shadow-md: 0 18px 48px -16px rgb(15 23 42 / 0.45);
+  --shadow-lg: 0 30px 80px -24px rgb(15 23 42 / 0.55);
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  font-family: var(--fs-font-sans);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: hsl(var(--primary) / 0.25);
+  color: hsl(var(--primary-foreground));
+}
+
+a {
+  @apply text-primary underline-offset-4 transition-colors hover:underline;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 3px;
+}
+
+@layer base {
+  h1 {
+    @apply text-4xl font-semibold tracking-tight text-foreground;
+    font-family: var(--font-kanit), var(--fs-font-display), var(--fs-font-sans);
+  }
+
+  h2 {
+    @apply text-3xl font-semibold tracking-tight text-foreground;
+    font-family: var(--font-kanit), var(--fs-font-display), var(--fs-font-sans);
+  }
+
+  h3 {
+    @apply text-2xl font-semibold tracking-tight text-foreground;
+    font-family: var(--font-kanit), var(--fs-font-display), var(--fs-font-sans);
+  }
+
+  h4 {
+    @apply text-xl font-semibold tracking-tight text-foreground;
+  }
+
+  p {
+    @apply text-base text-muted-foreground;
+  }
+}
+
+/* Lightweight text shadow helpers for readability over images */
+.text-shadow-sm { text-shadow: 0 1px 1px rgb(0 0 0 / 0.35); }
+.text-shadow-md { text-shadow: 0 2px 6px rgb(0 0 0 / 0.35); }
+.text-shadow-lg { text-shadow: 0 6px 18px rgb(0 0 0 / 0.45); }

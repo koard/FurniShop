@@ -14,7 +14,7 @@
     "test:e2e:headed": "playwright test --headed",
     "ingest": "tsx scripts/ingest-design.ts",
     "postinstall": "tsx scripts/ingest-design.ts --postinstall",
-    "prepare": "playwright install --with-deps"
+    "prepare": "node scripts/prepare-playwright.cjs"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.6.2",

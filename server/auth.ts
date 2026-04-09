@@ -104,7 +104,7 @@ export async function signInWithOAuth(profile: { id: string; email: string; name
       email: profile.email,
       role: 'CUSTOMER',
       password: nanoid(), // Auto-generate random password for OAuth users
-      avatar: profile.avatar,
+      avatar: profile.avatar || undefined,
     });
   } else if (!user.avatar && profile.avatar) {
     // Optionally update avatar if they didn't have one

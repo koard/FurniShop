@@ -33,6 +33,7 @@
     "nanoid": "^5.1.6",
     "next": "15.5.4",
     "next-intl": "4.3.9",
+    "omise": "^1.1.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.64.0",

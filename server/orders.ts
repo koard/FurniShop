@@ -11,6 +11,7 @@ interface CreateOrderInput {
   paymentRef?: string;
   promotionCode?: string;
   note?: string;
+  paymentStatus?: 'PAID' | 'PENDING';
 }
 
 export async function listOrdersByUser(userId: string, status?: OrderStatus) {
@@ -23,7 +24,7 @@ export async function getOrder(orderId: string) {
 }
 
 export async function createOrder(input: CreateOrderInput) {
-  const { userId, paymentRef, promotionCode, note } = input;
+  const { userId, paymentRef, promotionCode, note, paymentStatus } = input;
   const cart = await getCartByUser(userId);
 
   if (!cart.items.length) {
@@ -55,17 +56,23 @@ export async function createOrder(input: CreateOrderInput) {
     }
   }
 
+  const isPaid = paymentStatus === 'PAID';
+  const timeline: Order['timeline'] = [
+    { status: 'PENDING', at: new Date().toISOString(), note: note ?? undefined },
+  ];
+  if (isPaid) {
+    timeline.push({ status: 'PAID', at: new Date().toISOString() });
+  }
+
   const newOrder: Order = {
     id: nanoid(),
     userId,
     items,
     total,
     paymentRef,
-    status: 'PENDING',
+    status: isPaid ? 'PAID' : 'PENDING',
     trackingCode: `FS-${Date.now().toString().slice(-6)}`,
-    timeline: [
-      { status: 'PENDING', at: new Date().toISOString(), note: note ?? undefined },
-    ],
+    timeline,
   };
 
   db.orders.push(newOrder);

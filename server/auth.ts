@@ -103,6 +103,7 @@ export async function signOut() {
     await deleteSession(token);
     await clearSessionCookie();
   }
+  redirect('/' as Route<'/'>);
 }
 
 export async function getSession() {

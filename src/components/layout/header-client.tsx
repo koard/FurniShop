@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { useMemo } from "react";
+import { usePathname } from "next/navigation";
 
 import type { Role } from "../../../types/user";
 import type { NavItem } from "@/lib/navigation";
@@ -148,6 +149,8 @@ function MobileMenu({ items }: { items: NavItem[] }) {
 }
 
 export function HeaderClient({ role, user, mainNav, authNav }: HeaderClientProps) {
+  const pathname = usePathname();
+
   const combinedNav = useMemo(() => {
     return [
       ...mainNav,
@@ -168,15 +171,20 @@ export function HeaderClient({ role, user, mainNav, authNav }: HeaderClientProps
       <div className="flex items-center gap-8">
         <Logo className="text-lg" />
         <nav className="hidden items-center gap-6 md:flex">
-          {mainNav.map((item) => (
-            <Link
-              key={item.href}
-              href={toRoute(item.href)}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {mainNav.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+            return (
+              <Link
+                key={item.href}
+                href={toRoute(item.href)}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  isActive ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
       <div className="flex flex-1 items-center justify-end gap-4">

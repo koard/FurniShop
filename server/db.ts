@@ -407,20 +407,6 @@ const deliverySeed: DeliveryTask[] = [
   },
 ];
 const initialCarts = new Map<string, Cart>();
-initialCarts.set(userSeed[1].id, {
-  userId: userSeed[1].id,
-  items: [
-    {
-      productId: productSeed[0].id,
-      qty: 1,
-    },
-    {
-      productId: productSeed[6].id,
-      qty: 2,
-    },
-  ],
-  updatedAt: new Date('2024-05-01T10:00:00Z').toISOString(),
-});
 
 type DbSchema = {
   categories: string[];

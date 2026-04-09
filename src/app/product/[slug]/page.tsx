@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import type { Route } from "next";
 import { notFound } from "next/navigation";
 import { redirect } from "next/navigation";
-import { Star, Truck, ShieldCheck, Sparkles } from "lucide-react";
+import { Star, Truck, ShieldCheck, Sparkles, AlertTriangle } from "lucide-react";
 
 import { getProduct, listProducts } from "@server/products";
 import { db } from "@server/db";
@@ -15,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProductCard } from "@/components/cards/product-card";
 import { calculateDiscountedPrice, cn, formatCurrency, formatDate, percentage } from "@/lib/utils";
+import { ImageGallery } from "./image-gallery";
+import { WishlistButton } from "@/components/ui/wishlist-button";
 
 type ProductPageParams = {
   slug: string;
@@ -141,21 +142,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
       </nav>
 
       <div className="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-2xl border border-border bg-muted">
-            <Image
-              fill
-              src={product.images[0]}
-              alt={product.name}
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
-            />
-            {hasDiscount ? (
-              <Badge className="absolute left-4 top-4 bg-primary text-primary-foreground">ลดราคาพิเศษ</Badge>
-            ) : null}
-          </div>
-        </div>
+        <ImageGallery
+          images={product.images}
+          alt={product.name}
+          badge={
+            hasDiscount ? (
+              <Badge className="bg-primary text-primary-foreground">ลดราคาพิเศษ</Badge>
+            ) : undefined
+          }
+        />
 
         <div className="space-y-6">
           <div className="space-y-2">
@@ -169,10 +164,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 {rating.toFixed(1)}
               </span>
               <span>({product.reviewCount} รีวิว)</span>
-              <span className="hidden md:inline" aria-hidden>
-                •
-              </span>
-              <span>พร้อมส่ง {product.stock} ชิ้น</span>
+              <span className="hidden md:inline" aria-hidden>•</span>
+              {product.stock <= 5 ? (
+                <span className="flex items-center gap-1 font-semibold text-amber-500">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  เหลือเพียง {product.stock} ชิ้น!
+                </span>
+              ) : (
+                <span>พร้อมส่ง {product.stock} ชิ้น</span>
+              )}
             </div>
           </div>
 
@@ -200,9 +200,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 เพิ่มลงตะกร้า
               </Button>
             </form>
-            <Button variant="outline" size="lg" className="flex-1 sm:flex-none sm:px-8">
-              เพิ่มในรายการโปรด
-            </Button>
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center">
+              <WishlistButton
+                item={{
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  image: product.images[0],
+                  price: discountedPrice,
+                  originalPrice: product.price,
+                  category: product.category,
+                }}
+                className="h-11 w-11"
+              />
+            </div>
           </div>
 
           <div className="grid gap-4 rounded-2xl border border-border bg-muted/40 p-6 sm:grid-cols-3">

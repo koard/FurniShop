@@ -152,8 +152,7 @@ export default function CheckoutForm({
         });
         const data = await res.json() as { success: boolean; orderId?: string; chargeId?: string; error?: string };
         if (data.success && data.orderId) {
-          setSuccess({ orderId: data.orderId, chargeId: data.chargeId ?? '' });
-          setTimeout(() => router.push(`/` as Route<string>), 2000);
+          router.push(`/order-success?orderId=${data.orderId}` as Route<string>);
         } else {
           setError(data.error ?? 'เกิดข้อผิดพลาด');
         }
@@ -213,8 +212,7 @@ export default function CheckoutForm({
           });
           const data = await res.json() as { success: boolean; orderId?: string; chargeId?: string; error?: string };
           if (data.success && data.orderId) {
-            setSuccess({ orderId: data.orderId, chargeId: data.chargeId ?? '' });
-            setTimeout(() => router.push(`/` as Route<string>), 3000);
+            router.push(`/order-success?orderId=${data.orderId}` as Route<string>);
           } else {
             setError(data.error ?? 'การชำระเงินล้มเหลว');
           }
@@ -227,33 +225,7 @@ export default function CheckoutForm({
     );
   };
 
-  // ── Success State ──────────────────────────────────────────────────
-  if (success) {
-    return (
-      <div className="mx-auto flex max-w-md flex-col items-center gap-6 py-20 text-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600">
-          <CheckCircle className="h-10 w-10" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">ชำระเงินสำเร็จ! 🎉</h2>
-          <p className="mt-2 text-muted-foreground">คำสั่งซื้อของคุณถูกบันทึกแล้ว</p>
-        </div>
-        <div className="w-full rounded-xl border border-border bg-muted/40 p-4 text-left text-sm">
-          <div className="flex justify-between py-1">
-            <span className="text-muted-foreground">หมายเลขออร์เดอร์</span>
-            <span className="font-mono font-semibold">{success.orderId.slice(0, 8).toUpperCase()}</span>
-          </div>
-          {success.chargeId && (
-            <div className="flex justify-between py-1">
-              <span className="text-muted-foreground">Charge ID</span>
-              <span className="font-mono text-xs text-muted-foreground">{success.chargeId}</span>
-            </div>
-          )}
-        </div>
-        <p className="text-xs text-muted-foreground">กำลังพาคุณกลับหน้าหลัก...</p>
-      </div>
-    );
-  }
+
 
   // ── Empty Cart ─────────────────────────────────────────────────────
   if (lines.length === 0) {
@@ -281,18 +253,18 @@ export default function CheckoutForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor="full-name" className="text-sm font-medium text-foreground">ชื่อ-นามสกุล</label>
-              <Input id="full-name" name="full-name" defaultValue="Nina Chokdee" placeholder="ชื่อจริง" />
+              <Input id="full-name" name="full-name" defaultValue="Ratchanon Kulpatrakorn" placeholder="ชื่อจริง" />
             </div>
             <div className="space-y-2">
               <label htmlFor="phone" className="text-sm font-medium text-foreground">เบอร์โทรศัพท์</label>
-              <Input id="phone" name="phone" defaultValue="089 555 6789" placeholder="081-234-5678" />
+              <Input id="phone" name="phone" defaultValue="012 345 6789" placeholder="081-234-5678" />
             </div>
             <div className="space-y-2 sm:col-span-2">
               <label htmlFor="address" className="text-sm font-medium text-foreground">ที่อยู่จัดส่ง</label>
               <Input
                 id="address"
                 name="address"
-                defaultValue="128 ถนนสุขุมวิท แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110"
+                defaultValue="999 ถนนสุขุมวิท แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110"
                 placeholder="บ้านเลขที่ / ถนน / แขวง / เขต / จังหวัด / รหัสไปรษณีย์"
               />
             </div>

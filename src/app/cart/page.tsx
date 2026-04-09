@@ -23,6 +23,9 @@ export default async function CartPage() {
   const { lines, subtotal } = await loadCartLines();
   const voucherDiscount = subtotal > 0 ? subtotal * 0.1 : 0;
   const grandTotal = Math.max(subtotal - voucherDiscount, 0);
+  const FREE_SHIPPING_THRESHOLD = 5000;
+  const shippingProgress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
+  const remainingForFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
 
   // Server actions to mutate cart
   async function incrementAction(formData: FormData) {
@@ -174,6 +177,29 @@ export default async function CartPage() {
         </div>
 
         <aside className="h-fit space-y-6 rounded-2xl border border-border bg-muted/40 p-6 shadow-sm">
+          {/* Free shipping progress bar */}
+          {lines.length > 0 && (
+            <div className="space-y-2 rounded-xl border border-border bg-background/60 px-4 py-3">
+              {remainingForFreeShipping > 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  ซื้อเพิ่มอีก{" "}
+                  <span className="font-semibold text-foreground">
+                    {formatCurrency(remainingForFreeShipping)}
+                  </span>{" "}
+                  เพื่อรับ <span className="font-semibold text-green-600">จัดส่งฟรี!</span>
+                </p>
+              ) : (
+                <p className="text-xs font-semibold text-green-600">คุณได้รับสิทธิ์จัดส่งฟรีแล้ว!</p>
+              )}
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-green-500 transition-all duration-500"
+                  style={{ width: `${shippingProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">สรุปคำสั่งซื้อ</h2>
             <Badge variant="secondary" className="bg-primary/10 text-xs text-primary">

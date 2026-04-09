@@ -43,11 +43,16 @@ function toRoute(href: string): Route<string> {
 
 function SearchBar() {
   return (
-    <form className="hidden w-full max-w-xs items-center gap-2 rounded-full border border-border bg-muted px-3 py-1.5 text-sm text-muted-foreground transition focus-within:border-primary sm:flex">
-      <Search className="h-4 w-4" aria-hidden />
+    <form
+      action="/catalog"
+      method="get"
+      className="hidden w-full max-w-xs items-center gap-2 rounded-full border border-border bg-muted px-3 py-1.5 text-sm text-muted-foreground transition focus-within:border-primary sm:flex"
+    >
+      <Search className="h-4 w-4 shrink-0" aria-hidden />
       <Input
         type="search"
-        placeholder="ค้นหาสินค้า"
+        name="q"
+        placeholder="ค้นหาสินค้า..."
         className="h-auto border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
       />
     </form>
@@ -190,9 +195,11 @@ export function HeaderClient({ role, user, mainNav, authNav }: HeaderClientProps
       <div className="flex flex-1 items-center justify-end gap-4">
         <SearchBar />
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
-            <Heart className="h-5 w-5" />
-            <span className="sr-only">สินค้าที่ชอบ</span>
+          <Button variant="ghost" size="icon" className="hidden sm:inline-flex" asChild>
+            <Link href={toRoute("/wishlist")}>
+              <Heart className="h-5 w-5" />
+              <span className="sr-only">สินค้าที่ชอบ</span>
+            </Link>
           </Button>
           <Button variant="ghost" size="icon" asChild>
             <Link href={toRoute("/cart")}>

@@ -281,8 +281,8 @@ const userSeed: StoredUser[] = [
   },
   {
     id: nanoid(),
-    name: 'Nina Chokdee',
-    email: 'nina@example.com',
+    name: 'Ratchanon Kulpatrakorn',
+    email: 'ratchanon@example.com',
     role: 'CUSTOMER',
     avatar: 'https://i.pravatar.cc/150?img=35',
     password: hashPassword('Customer@123'),
@@ -406,9 +406,8 @@ const deliverySeed: DeliveryTask[] = [
     updatedAt: new Date('2024-05-03T05:10:00Z').toISOString(),
   },
 ];
-
-const cartStore = new Map<string, Cart>();
-cartStore.set(userSeed[1].id, {
+const initialCarts = new Map<string, Cart>();
+initialCarts.set(userSeed[1].id, {
   userId: userSeed[1].id,
   items: [
     {
@@ -422,9 +421,24 @@ cartStore.set(userSeed[1].id, {
   ],
   updatedAt: new Date('2024-05-01T10:00:00Z').toISOString(),
 });
-const sessionStore = new Map<string, Session>();
 
-export const db = {
+type DbSchema = {
+  categories: string[];
+  products: Product[];
+  promotions: Promotion[];
+  users: StoredUser[];
+  orders: Order[];
+  reviews: Review[];
+  deliveries: DeliveryTask[];
+  carts: Map<string, Cart>;
+  sessions: Map<string, Session>;
+};
+
+const globalForDb = globalThis as unknown as {
+  __brand_db: DbSchema;
+};
+
+export const db: DbSchema = globalForDb.__brand_db || {
   categories,
   products: productSeed,
   promotions: promotionSeed,
@@ -432,10 +446,13 @@ export const db = {
   orders: orderSeed,
   reviews: reviewSeed,
   deliveries: deliverySeed,
-  carts: cartStore,
-  sessions: sessionStore,
+  carts: initialCarts,
+  sessions: new Map<string, Session>(),
 };
 
+if (process.env.NODE_ENV !== 'production') {
+  globalForDb.__brand_db = db;
+}
 export async function findUserByEmail(email: string) {
   return db.users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 }

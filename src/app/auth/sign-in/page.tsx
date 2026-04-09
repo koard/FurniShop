@@ -42,12 +42,15 @@ export default function SignInPage() {
           avatar: cred.user.photoURL,
         });
         window.location.href = "/";
-      } catch (e: any) {
+      } catch (err: unknown) {
         let msg = "เข้าสู่ระบบไม่สำเร็จ";
-        if (e.code === "auth/invalid-credential" || e.code === "auth/user-not-found" || e.code === "auth/wrong-password") {
-          msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
-        } else if (e.message) {
-          msg = e.message;
+        if (err && typeof err === 'object') {
+          const e = err as { code?: string; message?: string };
+          if (e.code === "auth/invalid-credential" || e.code === "auth/user-not-found" || e.code === "auth/wrong-password") {
+            msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+          } else if (e.message) {
+            msg = e.message;
+          }
         }
         setError(msg);
       }

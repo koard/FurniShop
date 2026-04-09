@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, type AuthProvider } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { signInWithOAuth } from "@server/auth";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ export function OAuthButtons({ mode }: { mode: "sign-in" | "sign-up" }) {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleOAuth = async (providerName: string, getProvider: () => any) => {
+  const handleOAuth = async (providerName: string, getProvider: () => AuthProvider) => {
     try {
       setLoadingProvider(providerName);
       const provider = getProvider();
@@ -28,7 +28,8 @@ export function OAuthButtons({ mode }: { mode: "sign-in" | "sign-up" }) {
 
       router.push("/account");
       router.refresh();
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as { message?: string };
       console.error(`${providerName} login error:`, error);
       alert(`เกิดข้อผิดพลาดในการล็อกอินด้วย ${providerName}: ${error.message}`);
     } finally {

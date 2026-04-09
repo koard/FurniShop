@@ -82,12 +82,15 @@ export default function SignUpPage() {
         });
         
         window.location.href = "/";
-      } catch (e: any) {
+      } catch (err: unknown) {
         let msg = "สมัครสมาชิกไม่สำเร็จ";
-        if (e.code === "auth/email-already-in-use") {
-          msg = "อีเมลนี้ถูกใช้งานแล้ว";
-        } else if (e.message) {
-          msg = e.message;
+        if (err && typeof err === 'object') {
+          const e = err as { code?: string; message?: string };
+          if (e.code === "auth/email-already-in-use") {
+            msg = "อีเมลนี้ถูกใช้งานแล้ว";
+          } else if (e.message) {
+            msg = e.message;
+          }
         }
         setError(msg);
       }

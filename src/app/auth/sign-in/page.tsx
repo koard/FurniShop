@@ -10,11 +10,6 @@ import { signIn } from "@server/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-// Demo accounts hint
-const DEMO_ACCOUNTS = [
-  { label: "ลูกค้า", email: "nina@example.com", password: "Customer@123" },
-  { label: "Admin", email: "admin@furnishop.com", password: "Admin@123" },
-];
 
 export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
@@ -23,11 +18,6 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function fillDemo(acc: { email: string; password: string }) {
-    setEmail(acc.email);
-    setPassword(acc.password);
-    setError(null);
-  }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -123,24 +113,6 @@ export default function SignInPage() {
             </p>
           </div>
 
-          {/* Demo accounts */}
-          <div className="rounded-xl border border-border bg-muted/40 p-4">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              🔑 บัญชีทดสอบ (คลิกเพื่อกรอกอัตโนมัติ)
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {DEMO_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  onClick={() => fillDemo(acc)}
-                  className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary hover:bg-primary/5 hover:text-primary"
-                >
-                  {acc.label} — {acc.email}
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Error */}
           {error && (

@@ -39,7 +39,7 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
       {/* Header */}
       <div className="mb-8">
         <Button variant="ghost" size="sm" asChild className="-ml-3 mb-4 text-muted-foreground hover:text-foreground">
-          <Link href={"/(customer)/account/orders" as Route<string>}>
+          <Link href={"/account/orders" as Route<string>}>
             <ArrowLeft className="mr-2 h-4 w-4" /> กลับไปประวัติคำสั่งซื้อ
           </Link>
         </Button>

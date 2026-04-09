@@ -6,9 +6,12 @@ import type { Route } from "next";
 import { Eye, EyeOff, Loader2, AlertCircle, ArrowRight, Lock, Mail, Sofa } from "lucide-react";
 
 import { signInSchema } from "@/lib/validators";
-import { signIn } from "@server/auth";
+import { signInWithOAuth } from "@server/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
 
 export default function SignInPage() {
@@ -31,11 +34,22 @@ export default function SignInPage() {
 
     startTransition(async () => {
       try {
-        await signIn(parsed.data);
+        const cred = await signInWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        await signInWithOAuth({
+          id: cred.user.uid,
+          email: cred.user.email ?? parsed.data.email,
+          name: cred.user.displayName || "ผู้ใช้",
+          avatar: cred.user.photoURL,
+        });
         window.location.href = "/";
-      } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : "เข้าสู่ระบบไม่สำเร็จ";
-        setError(msg === "Invalid credentials" ? "อีเมลหรือรหัสผ่านไม่ถูกต้อง" : msg);
+      } catch (e: any) {
+        let msg = "เข้าสู่ระบบไม่สำเร็จ";
+        if (e.code === "auth/invalid-credential" || e.code === "auth/user-not-found" || e.code === "auth/wrong-password") {
+          msg = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+        } else if (e.message) {
+          msg = e.message;
+        }
+        setError(msg);
       }
     });
   }
@@ -207,6 +221,8 @@ export default function SignInPage() {
               <span className="bg-background px-3 text-muted-foreground">หรือ</span>
             </div>
           </div>
+
+          <OAuthButtons mode="sign-in" />
 
           <p className="text-center text-sm text-muted-foreground">
             ยังไม่มีบัญชี?{" "}

@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/cards/product-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { CatalogForm } from "@/components/filters/catalog-form";
 import { PriceRangeSlider } from "@/components/filters/price-range-slider";
 import { cn, formatCurrency } from "@/lib/utils";
 import type { ProductFilter } from "../../../types/product";
@@ -196,30 +197,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 gap-8 px-4 pb-16 pt-8 lg:px-8 xl:px-12">
       <aside className="hidden w-80 shrink-0 lg:block">
-        <div className="sticky top-24 space-y-6">
+        <div className="space-y-6">
           <div>
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground">กรองผลลัพธ์</h2>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
-                  ปรับค่าตัวกรองเพื่อค้นหาสินค้าที่ลงตัวกับบ้านของคุณ
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 rounded-full px-3 text-xs text-muted-foreground hover:text-primary"
-                asChild
-              >
-                <Link href={"/catalog" as Route<string>}>ล้างทั้งหมด</Link>
-              </Button>
-            </div>
-            <form className="mt-6 space-y-6" action="/catalog" method="get">
+            <CatalogForm className="mt-6 space-y-6">
               <HiddenFilters filter={filter} exclude={["categories", "materials", "minPrice", "maxPrice", "rating", "page"]} />
 
               <FilterCard
                 title="หมวดหมู่"
-                description="เลือกพื้นที่ที่คุณกำลังมองหา"
                 action=
                   {filter.categories.length ? (
                     <Link
@@ -240,9 +224,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         defaultChecked={filter.categories.includes(category)}
                         className="peer sr-only"
                       />
-                      <span className="flex items-center justify-between rounded-lg border border-border/25 bg-background px-3.5 py-2 text-xs font-medium text-muted-foreground/90 transition hover:border-primary/40 hover:bg-primary/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 peer-checked:text-primary">
+                      <span className="flex items-center rounded-lg border border-border/50 bg-background px-3.5 py-2 text-xs font-medium text-muted-foreground/90 transition hover:border-primary/40 hover:bg-primary/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 peer-checked:text-primary">
                         <span>{category}</span>
-                        <span className="h-2 w-2 rounded-full border border-muted-foreground/40 peer-checked:border-primary peer-checked:bg-primary" aria-hidden />
                       </span>
                     </label>
                   ))}
@@ -251,7 +234,6 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
               <FilterCard
                 title="วัสดุ"
-                description="ระบุวัสดุที่ต้องการ"
                 action=
                   {filter.materials.length ? (
                     <Link
@@ -272,7 +254,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                         defaultChecked={filter.materials.includes(material)}
                         className="peer sr-only"
                       />
-                      <span className="flex items-center justify-between rounded-lg border border-border/25 bg-background px-3.5 py-2 text-xs font-medium text-muted-foreground/90 transition hover:border-primary/40 hover:bg-primary/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 peer-checked:text-primary">
+                      <span className="flex items-center rounded-lg border border-border/50 bg-background px-3.5 py-2 text-xs font-medium text-muted-foreground/90 transition hover:border-primary/40 hover:bg-primary/5 peer-checked:border-primary/60 peer-checked:bg-primary/10 peer-checked:text-primary">
                         <span>{material}</span>
                       </span>
                     </label>
@@ -280,7 +262,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                 </div>
               </FilterCard>
 
-              <FilterCard title="ช่วงราคา" description="ลากเพื่อกำหนดช่วงราคาที่ต้องการ">
+              <FilterCard title="ช่วงราคา">
                 <PriceRangeSlider
                   min={PRICE_RANGE.min}
                   max={PRICE_RANGE.max}
@@ -291,7 +273,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                 />
               </FilterCard>
 
-              <FilterCard title="เรตติ้ง" description="เลือกขั้นต่ำของคะแนนรีวิว">
+              <FilterCard title="เรตติ้ง">
                 <div className="flex flex-wrap gap-2">
                   <label className="cursor-pointer">
                     <input type="radio" name="rating" value="" defaultChecked={filter.rating == null} className="peer sr-only" />
@@ -316,30 +298,13 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                 </div>
               </FilterCard>
 
-              <Button type="submit" variant="secondary" className="w-full rounded-full">
-                ใช้ตัวกรอง
-              </Button>
-            </form>
+            </CatalogForm>
           </div>
         </div>
       </aside>
       <div className="flex flex-1 flex-col gap-6">
         <div className="space-y-4">
-          <form className="relative" action="/catalog" method="get">
-            <HiddenFilters filter={{ ...filter, page: 1 }} exclude={["q", "page"]} />
-            <Input
-              name="q"
-              defaultValue={filter.q ?? ""}
-              placeholder="ค้นหาสินค้า เช่น โซฟา โต๊ะทำงาน"
-              className="pl-10"
-            />
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-3.5-3.5" />
-              </svg>
-            </span>
-          </form>
+
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground">
               แสดง {start}-{end} จากทั้งหมด {total} รายการ

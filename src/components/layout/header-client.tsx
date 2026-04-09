@@ -99,7 +99,7 @@ function UserMenu({ user, links }: { user: UserSummary; links: NavItem[] }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={toRoute("/(customer)/account")} className="flex items-center gap-2">
+          <Link href={toRoute("/account")} className="flex items-center gap-2">
             <UserRound className="h-4 w-4" />
             บัญชีของฉัน
           </Link>
@@ -118,13 +118,9 @@ function UserMenu({ user, links }: { user: UserSummary; links: NavItem[] }) {
           </DropdownMenuItem>
         ))}
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <form action={signOut} className="flex w-full items-center gap-2">
-            <button type="submit" className="flex w-full items-center gap-2 text-left text-sm">
-              <LogOut className="h-4 w-4" />
-              ออกจากระบบ
-            </button>
-          </form>
+        <DropdownMenuItem onSelect={() => signOut()} className="flex items-center gap-2 text-sm cursor-pointer">
+          <LogOut className="h-4 w-4" />
+          ออกจากระบบ
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -166,7 +162,7 @@ export function HeaderClient({ role, user, mainNav, authNav }: HeaderClientProps
   const roleSpecific = useMemo(
     () =>
       authNav.filter(
-        (item) => item.roles && item.roles.includes(role) && !item.href.startsWith("/auth/")
+        (item) => item.roles && item.roles.includes(role) && !item.href.startsWith("/auth/") && item.label !== "บัญชีของฉัน"
       ),
     [authNav, role]
   );

@@ -96,6 +96,39 @@ export async function signUp(payload: SignUpPayload) {
   return session.user;
 }
 
+export async function signInWithOAuth(profile: { id: string; email: string; name: string; avatar?: string | null }) {
+  let user = await findUserByEmail(profile.email);
+  if (!user) {
+    user = await createUser({
+      name: profile.name,
+      email: profile.email,
+      role: 'CUSTOMER',
+      password: nanoid(), // Auto-generate random password for OAuth users
+      avatar: profile.avatar,
+    });
+  } else if (!user.avatar && profile.avatar) {
+    // Optionally update avatar if they didn't have one
+    user.avatar = profile.avatar;
+  }
+
+  const token = nanoid();
+  const session: Session = {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    },
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
+  };
+
+  await saveSession(token, session);
+  await setSessionCookie(token);
+
+  return session.user;
+}
+
 export async function signOut() {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE_NAME)?.value;

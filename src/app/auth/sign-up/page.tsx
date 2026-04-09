@@ -9,9 +9,12 @@ import {
 } from "lucide-react";
 
 import { signUpSchema } from "@/lib/validators";
-import { signUp } from "@server/auth";
+import { signInWithOAuth } from "@server/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { PASSWORD_POLICY } from "@/lib/auth";
 
 // Password strength rules
@@ -68,11 +71,25 @@ export default function SignUpPage() {
 
     startTransition(async () => {
       try {
-        await signUp({ name: parsed.data.name, email: parsed.data.email, password: parsed.data.password });
+        const cred = await createUserWithEmailAndPassword(auth, parsed.data.email, parsed.data.password);
+        await updateProfile(cred.user, { displayName: parsed.data.name });
+        
+        await signInWithOAuth({
+          id: cred.user.uid,
+          email: cred.user.email ?? parsed.data.email,
+          name: parsed.data.name,
+          avatar: cred.user.photoURL,
+        });
+        
         window.location.href = "/";
-      } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : "สมัครสมาชิกไม่สำเร็จ";
-        setError(msg === "Email already registered" ? "อีเมลนี้ถูกใช้งานแล้ว" : msg);
+      } catch (e: any) {
+        let msg = "สมัครสมาชิกไม่สำเร็จ";
+        if (e.code === "auth/email-already-in-use") {
+          msg = "อีเมลนี้ถูกใช้งานแล้ว";
+        } else if (e.message) {
+          msg = e.message;
+        }
+        setError(msg);
       }
     });
   }
@@ -313,6 +330,20 @@ export default function SignUpPage() {
               <span className="cursor-pointer text-primary hover:underline">นโยบายความเป็นส่วนตัว</span>
             </p>
           </form>
+
+          {/* Divider */}
+          <div className="relative mt-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="bg-background px-3 text-muted-foreground">หรือสมัครผ่านช่องทางอื่น</span>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <OAuthButtons mode="sign-up" />
+          </div>
         </div>
       </div>
     </div>

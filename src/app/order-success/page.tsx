@@ -43,7 +43,7 @@ export default async function OrderSuccessPage({ searchParams }: OrderSuccessPag
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button asChild size="lg" className="min-w-[160px]">
-          <Link href={"/(customer)/account/orders" as Route<string>}>
+          <Link href={"/account/orders" as Route<string>}>
             <Package className="mr-2 h-4 w-4" /> ดูออร์เดอร์ของฉัน
           </Link>
         </Button>

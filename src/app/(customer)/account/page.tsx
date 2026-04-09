@@ -29,13 +29,13 @@ export default async function AccountPage() {
         </div>
         <nav className="flex flex-col gap-1">
           <Link
-            href={"/(customer)/account" as Route<string>}
+            href={"/account" as Route<string>}
             className="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-sm font-medium text-primary"
           >
             <User className="h-5 w-5" /> ภาพรวมบัญชี
           </Link>
           <Link
-            href={"/(customer)/account/orders" as Route<string>}
+            href={"/account/orders" as Route<string>}
             className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             <Package className="h-5 w-5" /> ประวัติคำสั่งซื้อ
@@ -79,7 +79,7 @@ export default async function AccountPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">คำสั่งซื้อล่าสุด</h2>
             <Button variant="ghost" size="sm" asChild>
-              <Link href={"/(customer)/account/orders" as Route<string>}>ดูทั้งหมด</Link>
+              <Link href={"/account/orders" as Route<string>}>ดูทั้งหมด</Link>
             </Button>
           </div>
 
@@ -92,7 +92,7 @@ export default async function AccountPage() {
               {recentOrders.map((order) => (
                 <Link
                   key={order.id}
-                  href={`/(customer)/account/orders/${order.id}` as Route<string>}
+                  href={`/account/orders/${order.id}` as Route<string>}
                   className="flex flex-col gap-4 rounded-2xl border border-border bg-background p-6 transition hover:border-primary/50 hover:shadow-sm sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>

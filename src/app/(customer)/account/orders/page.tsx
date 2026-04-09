@@ -27,13 +27,13 @@ export default async function OrdersPage() {
         </div>
         <nav className="flex flex-col gap-1">
           <Link
-            href={"/(customer)/account" as Route<string>}
+            href={"/account" as Route<string>}
             className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             <User className="h-5 w-5" /> ภาพรวมบัญชี
           </Link>
           <Link
-            href={"/(customer)/account/orders" as Route<string>}
+            href={"/account/orders" as Route<string>}
             className="flex items-center gap-3 rounded-xl bg-primary/10 px-4 py-3 text-sm font-medium text-primary"
           >
             <Package className="h-5 w-5" /> ประวัติคำสั่งซื้อ
@@ -108,7 +108,7 @@ export default async function OrdersPage() {
                   </div>
                   <div>
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/(customer)/account/orders/${order.id}` as Route<string>}>ดูรายละเอียด</Link>
+                      <Link href={`/account/orders/${order.id}` as Route<string>}>ดูรายละเอียด</Link>
                     </Button>
                   </div>
                 </div>

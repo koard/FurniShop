@@ -53,6 +53,7 @@ export function PriceRangeSlider({
 
   const handleReset = useCallback(() => {
     setRange([min, max]);
+    setTimeout(() => window.dispatchEvent(new Event("slider-commit")), 0);
   }, [min, max]);
 
   const [start, end] = range;
@@ -85,6 +86,7 @@ export function PriceRangeSlider({
         step={step}
         value={range}
         onValueChange={handleValueChange}
+        onValueCommit={() => window.dispatchEvent(new Event("slider-commit"))}
       >
         <Slider.Track className="relative h-[6px] w-full grow overflow-hidden rounded-full bg-muted/70">
           <Slider.Range className="absolute h-full rounded-full bg-primary/80" />

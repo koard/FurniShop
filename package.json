@@ -29,6 +29,7 @@
     "clsx": "^2.1.1",
     "critters": "^0.0.25",
     "date-fns": "^4.1.0",
+    "firebase": "^12.11.0",
     "lucide-react": "^0.544.0",
     "nanoid": "^5.1.6",
     "next": "15.5.4",

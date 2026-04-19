@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { nanoid } from 'nanoid';
-import { db, clearCart, getCartByUser } from './db';
+import { db } from './db';
+import { getCart, clearCartForUser } from './cart';
 import type { Order, OrderStatus } from '../types/order';
 import { calculateDiscountedPrice, formatCurrency } from '../src/lib/utils';
 
@@ -25,7 +26,7 @@ export async function getOrder(orderId: string) {
 
 export async function createOrder(input: CreateOrderInput) {
   const { userId, paymentRef, promotionCode, note, paymentStatus } = input;
-  const cart = await getCartByUser(userId);
+  const cart = await getCart(userId);
 
   if (!cart.items.length) {
     throw new Error('Cart is empty');
@@ -76,7 +77,7 @@ export async function createOrder(input: CreateOrderInput) {
   };
 
   db.orders.push(newOrder);
-  await clearCart(userId);
+  await clearCartForUser(userId);
 
   await revalidatePath('/orders');
   await revalidatePath('/(customer)/account');

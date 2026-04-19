@@ -20,9 +20,10 @@ interface SignUpPayload {
   password: string;
 }
 
-async function setSessionCookie(token: string) {
+async function setSessionCookie(session: Session) {
   const store = await cookies();
-  store.set(SESSION_COOKIE_NAME, token, {
+  const value = Buffer.from(JSON.stringify(session)).toString('base64');
+  store.set(SESSION_COOKIE_NAME, value, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -47,7 +48,6 @@ export async function signIn(payload: SignInPayload) {
     throw new Error('Invalid credentials');
   }
 
-  const token = nanoid();
   const session: Session = {
     user: {
       id: user.id,
@@ -59,8 +59,7 @@ export async function signIn(payload: SignInPayload) {
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
   };
 
-  await saveSession(token, session);
-  await setSessionCookie(token);
+  await setSessionCookie(session);
 
   return session.user;
 }
@@ -78,7 +77,6 @@ export async function signUp(payload: SignUpPayload) {
     password: payload.password,
   });
 
-  const token = nanoid();
   const session: Session = {
     user: {
       id: newUser.id,
@@ -90,8 +88,7 @@ export async function signUp(payload: SignUpPayload) {
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
   };
 
-  await saveSession(token, session);
-  await setSessionCookie(token);
+  await setSessionCookie(session);
 
   return session.user;
 }
@@ -111,7 +108,6 @@ export async function signInWithOAuth(profile: { id: string; email: string; name
     user.avatar = profile.avatar;
   }
 
-  const token = nanoid();
   const session: Session = {
     user: {
       id: user.id,
@@ -123,30 +119,27 @@ export async function signInWithOAuth(profile: { id: string; email: string; name
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
   };
 
-  await saveSession(token, session);
-  await setSessionCookie(token);
+  await setSessionCookie(session);
 
   return session.user;
 }
 
 export async function signOut() {
-  const store = await cookies();
-  const token = store.get(SESSION_COOKIE_NAME)?.value;
-  if (token) {
-    await deleteSession(token);
-    await clearSessionCookie();
-  }
+  await clearSessionCookie();
   redirect('/' as Route<'/'>);
 }
 
-export async function getSession() {
+export async function getSession(): Promise<Session | null> {
   const store = await cookies();
-  const token = store.get(SESSION_COOKIE_NAME)?.value;
-  if (!token) return null;
-  const session = await getSessionByToken(token);
-  // Do not mutate cookies here (render path). Just return null if invalid.
-  if (!session) return null;
-  return session;
+  const value = store.get(SESSION_COOKIE_NAME)?.value;
+  if (!value) return null;
+  
+  try {
+    const session = JSON.parse(Buffer.from(value, 'base64').toString('utf-8')) as Session;
+    return session;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function requireRole(roles: Role[]) {
